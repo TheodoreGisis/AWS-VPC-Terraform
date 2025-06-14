@@ -1,5 +1,7 @@
-provider "aws" {
-    
-    region = "eu-central-1"
+#########################################
+# AWS Provider Configuration
+#########################################
 
+provider "aws" {
+    region = "eu-central-1"
 }
