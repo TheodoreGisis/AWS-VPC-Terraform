@@ -10,7 +10,7 @@ This project provisions a complete and production-ready VPC networking architect
 - 🌍 3 Public Subnets (one per Availability Zone)
 - 🔒 6 Private Subnets (two per Availability Zone)
 - 🌐 Internet Gateway for public access
-- 🔁 NAT Gateway for private subnets' outbound internet
+- 🔁 3 NAT Gateways (one per AZ) for private subnets' outbound internet with high availability
 - 🛣️ Separate route tables for public and private traffic
 - 🏷️ Centralized tagging using Terraform `locals`
 - ⚙️ Modular design for easy reuse and customization
@@ -68,7 +68,7 @@ terraform apply
   - `Private`: 2 per AZ
 - **Routing**:
   - Public subnets → Internet Gateway
-  - Private subnets → NAT Gateway
+  - Private subnets → NAT Gateway per AZ (3 total) for high availability
 
 ---
 
@@ -79,7 +79,7 @@ After deployment, Terraform will output:
 - VPC ID
 - Public & Private Subnet IDs
 - Route Table IDs
-- NAT Gateway and Elastic IP
+- NAT Gateway and Elastic IPs
 
 ---
 
@@ -107,11 +107,9 @@ These tags are centrally defined using `locals` for consistency.
 
 ---
 
-
 ## 🏁 Next Steps (ideas to expand)
 
 - Add EC2 / ALB modules using these subnets
 - Setup S3 backend for remote state
 
 ---
-
