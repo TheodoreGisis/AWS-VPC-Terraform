@@ -93,45 +93,49 @@ resource "aws_route_table_association" "public" {
 }
 
 #########################################
-# NAT Gateway
+# NAT Gateways (1 per AZ for HA)
 #########################################
 
 resource "aws_eip" "nat" {
+  count = length(var.availability_zones)
+
   tags = merge(local.common_tags, {
-    Name = "nat-eip-${var.vpc_name}"
+    Name = "nat-eip-${var.vpc_name}-${count.index + 1}"
   })
 }
 
 resource "aws_nat_gateway" "this" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public[0].id
+  count         = length(var.availability_zones)
+  allocation_id = aws_eip.nat[count.index].id
+  subnet_id     = aws_subnet.public[count.index].id
 
   tags = merge(local.common_tags, {
-    Name = "nat-gateway-${var.vpc_name}"
+    Name = "nat-gateway-${var.vpc_name}-${count.index + 1}"
   })
 
   depends_on = [aws_internet_gateway.this]
 }
 
 #########################################
-# Private Route Table
+# Private Route Tables (1 per NAT GW)
 #########################################
 
 resource "aws_route_table" "private" {
+  count  = length(var.availability_zones)
   vpc_id = aws_vpc.this.id
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.this.id
+    nat_gateway_id = aws_nat_gateway.this[count.index].id
   }
 
   tags = merge(local.common_tags, {
-    Name = "private-rt-${var.vpc_name}"
+    Name = "private-rt-${var.vpc_name}-${count.index + 1}"
   })
 }
 
 resource "aws_route_table_association" "private" {
   count          = length(var.private_subnets)
   subnet_id      = aws_subnet.private[count.index].id
-  route_table_id = aws_route_table.private.id
+  route_table_id = aws_route_table.private[count.index % length(var.availability_zones)].id
 }

@@ -30,9 +30,17 @@ output "public_route_table_id" {
   value       = aws_route_table.public.id
 }
 
-output "private_route_table_id" {
-  description = "The ID of the private route table"
-  value       = aws_route_table.private.id
+output "private_route_table_ids" {
+  description = "List of private route table IDs (1 per AZ)"
+  value       = [for rt in aws_route_table.private : rt.id]
+}
+
+output "private_route_table_ids_by_az" {
+  description = "Map of AZ to private route table ID"
+  value = {
+    for i, az in var.availability_zones :
+    az => aws_route_table.private[i].id
+  }
 }
 
 #########################################
@@ -44,12 +52,28 @@ output "internet_gateway_id" {
   value       = aws_internet_gateway.this.id
 }
 
-output "nat_gateway_id" {
-  description = "The ID of the NAT Gateway"
-  value       = aws_nat_gateway.this.id
+output "nat_gateway_ids" {
+  description = "List of NAT Gateway IDs (1 per AZ)"
+  value       = [for nat in aws_nat_gateway.this : nat.id]
 }
 
-output "nat_eip" {
-  description = "The Elastic IP of the NAT Gateway"
-  value       = aws_eip.nat.public_ip
+output "nat_gateway_ids_by_az" {
+  description = "Map of AZ to NAT Gateway ID"
+  value = {
+    for i, az in var.availability_zones :
+    az => aws_nat_gateway.this[i].id
+  }
+}
+
+output "nat_eip_public_ips" {
+  description = "List of NAT Gateway EIP public IPs"
+  value       = [for eip in aws_eip.nat : eip.public_ip]
+}
+
+output "nat_eip_public_ips_by_az" {
+  description = "Map of AZ to NAT Gateway EIP public IP"
+  value = {
+    for i, az in var.availability_zones :
+    az => aws_eip.nat[i].public_ip
+  }
 }
