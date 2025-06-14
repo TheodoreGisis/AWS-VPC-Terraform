@@ -107,22 +107,11 @@ These tags are centrally defined using `locals` for consistency.
 
 ---
 
-## 📌 Author
-
-**Theodoros Gkisis**  
-Cloud & DevOps Engineer  
-[LinkedIn Profile](https://www.linkedin.com/in/your-profile)  
-
----
 
 ## 🏁 Next Steps (ideas to expand)
 
 - Add EC2 / ALB modules using these subnets
 - Setup S3 backend for remote state
-- Implement multi-environment support (dev/stage/prod)
 
 ---
 
-## 📄 License
-
-This project is licensed under the MIT License.
