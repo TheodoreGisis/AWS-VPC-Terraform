@@ -30,11 +30,6 @@ This project provisions a complete and production-ready VPC networking architect
 │ ├── variables.tf # Module input variables
 │ ├── outputs.tf # Module outputs
 
-yaml
-Αντιγραφή
-Επεξεργασία
-
----
 
 ## 🚀 Getting Started
 
